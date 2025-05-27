@@ -1,0 +1,54 @@
+//Chiron Silva Axel Nicolás
+#include <stdio.h>
+#include <string.h>
+
+struct categoria {
+    char nombre[20];
+    int frecuencia;
+};
+
+int main() {
+    const char *datos[] = {
+        "carro", "avion", "carro", "tren", "barco", "carro", "avion", "carro",
+        "avion", "tren", "barco", "avion", "carro", "avion", "carro", "barco",
+        "avion", "carro", "tren", "carro", "barco", "avion", "carro", "carro",
+        "tren", "avion", "carro", "barco", "avion", "carro", "carro", "tren",
+        "carro", "avion", "carro", "barco", "avion", "tren", "carro", "avion"
+    };
+    int total = sizeof(datos) / sizeof(datos[0]);
+
+    struct categoria categorias[10];
+    int num_cat = 0;
+
+    //frecuencias
+    for (int i = 0; i < total; i++) {
+        int encontrado = 0;
+        for (int j = 0; j < num_cat; j++) {
+            if (strcmp(datos[i], categorias[j].nombre) == 0) {
+                categorias[j].frecuencia++;
+                encontrado = 1;
+                break;
+            }
+        }
+        if (!encontrado) {
+            strcpy(categorias[num_cat].nombre, datos[i]);
+            categorias[num_cat].frecuencia = 1;
+            num_cat++;
+        }
+    }
+
+    //tabla
+    printf("tabla de frecuencias - medios de transporte\n");
+    printf("%-12s %-5s %-6s %s\n", "transporte", "F", "FR", "%");
+    printf("-----------------------------------------\n");
+
+    for (int i = 0; i < num_cat; i++) {
+        double fr = (double)categorias[i].frecuencia / total;
+        printf("%-12s %-5d %-6.2f %d%%\n", categorias[i].nombre, categorias[i].frecuencia, fr, (int)(fr * 100));
+    }
+
+
+    printf("%-12s %-5d %-6.2f %s\n", "total", total, 1.00, "100%%");
+
+    return 0;
+}
