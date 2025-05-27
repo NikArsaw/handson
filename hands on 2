@@ -1,0 +1,44 @@
+#include <stdio.h>
+
+int main() {
+    // 1. datos 
+    double x[] = {5, 10, 15, 20, 25}; // advertising
+    double y[] = {30, 50, 60, 70, 90}; //ales
+    int n = 5;
+
+    //calculo de las Medias (Promedios)
+    double suma_x = 0, suma_y = 0;
+    int i;
+    for(i = 0; i < n; i++) {
+        suma_x += x[i];
+        suma_y += y[i];
+    }
+    double media_x = suma_x / n;
+    double media_y = suma_y / n;
+
+    //calculo beta1 y beta0
+    double suma_xy = 0, suma_xx = 0;
+    for(i = 0; i < n; i++) {
+        double dx = x[i] - media_x;
+        double dy = y[i] - media_y;
+        suma_xy += dx * dy;
+        suma_xx += dx * dx;
+    }
+
+    double beta1 = suma_xy / suma_xx;
+    double beta0 = media_y - beta1 * media_x;
+
+    //regresion
+    printf("regresion:\n");
+    printf("y = %.4f + %.4f * x\n\n", beta0, beta1);
+
+    //predicciones
+    printf("predicciones:\n");
+    double nuevos_x[] = {6, 12, 18, 24, 30};
+    for(i = 0; i < 5; i++) {
+        double prediccion = beta0 + beta1 * nuevos_x[i];
+        printf("advertising: %.2f -> sales: %.2f\n", nuevos_x[i], prediccion);
+    }
+
+    return 0;
+}
