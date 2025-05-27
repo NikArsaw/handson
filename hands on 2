@@ -4,7 +4,7 @@
 int main() {
     // 1. datos 
     double x[] = {5, 10, 15, 20, 25}; // advertising
-    double y[] = {30, 50, 60, 70, 90}; //ales
+    double y[] = {30, 50, 60, 70, 90}; //sales
     int n = 5;
 
     //calculo de las Medias (Promedios)
