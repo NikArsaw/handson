@@ -1,0 +1,90 @@
+//Chiron Silva Axel Nicolás
+#include <stdio.h>
+#include <math.h>
+#include <limits.h>
+
+#define MAX_DATOS 100
+#define MAX_CLASES 15
+
+struct Clase {
+    int limite_inferior, limite_superior;
+    int frecuencia;
+    double punto_medio;
+    int frecuencia_acumulada;
+    double frecuencia_relativa;
+    double frecuencia_relativa_acumulada;
+    int porcentaje;
+};
+
+//calcula la tabla
+void calcular_frecuencias(int datos[], int num_datos, int num_clases) {
+    int min_val = INT_MAX;
+    int max_val = INT_MIN;
+    for (int i = 0; i < num_datos; i++) {
+        if (datos[i] < min_val) min_val = datos[i];
+        if (datos[i] > max_val) max_val = datos[i];
+    }
+
+    // Calcular rango y amplitud
+    int rango = max_val - min_val;
+    int amplitud = (rango == 0) ? 1 : (rango / num_clases) + 1;
+
+    struct Clase clases[MAX_CLASES];
+    int limite_inferior_actual = min_val;
+    int fa_acumulada = 0;
+    double fra_acumulada = 0.0;
+    //clases
+    for (int i = 0; i < num_clases; i++) {
+        clases[i].limite_inferior = limite_inferior_actual;
+        clases[i].limite_superior = limite_inferior_actual + amplitud - 1;
+        clases[i].frecuencia = 0;
+
+        for (int j = 0; j < num_datos; j++) {
+            if (datos[j] >= clases[i].limite_inferior && datos[j] <= clases[i].limite_superior) {
+                clases[i].frecuencia++;
+            }
+        }
+
+        //límites
+        if (i == num_clases - 1 && clases[i].limite_superior < max_val) {
+            clases[i].limite_superior = max_val;
+        }
+
+        clases[i].punto_medio = (clases[i].limite_inferior + clases[i].limite_superior) / 2.0;
+        fa_acumulada += clases[i].frecuencia;
+        clases[i].frecuencia_acumulada = fa_acumulada;
+        clases[i].frecuencia_relativa = (double)clases[i].frecuencia / num_datos;
+        fra_acumulada += clases[i].frecuencia_relativa;
+        clases[i].frecuencia_relativa_acumulada = fra_acumulada;
+        clases[i].porcentaje = (int)(clases[i].frecuencia_relativa * 100);
+
+        limite_inferior_actual += amplitud;
+    }
+
+    //tabla
+    printf("clase\trango\t\tfrecuencia\tpunto medio\tfa\tfr\tfra\tporcentaje %%\n");
+    printf("---------------------------------------------------------------------------------------------------\n");
+    for (int i = 0; i < num_clases; i++) {
+        printf("%d\t%d-%d\t\t%d\t\t%.2f\t\t%d\t%.2f\t%.2f\t%d%%\n",
+               i + 1,
+               clases[i].limite_inferior, clases[i].limite_superior,
+               clases[i].frecuencia, clases[i].punto_medio,
+               clases[i].frecuencia_acumulada,
+               clases[i].frecuencia_relativa,
+               (i == num_clases - 1) ? 1.00 : clases[i].frecuencia_relativa_acumulada,
+               clases[i].porcentaje);
+    }
+    printf("---------------------------------------------------------------------------------------------------\n");
+    printf("total\t\t\tn = %d\t\t\t\t\t\t\t1.00\t100%%\n", num_datos);
+}
+
+int main() {
+    //datos de ejemplo
+    int datos[MAX_DATOS] = {15, 22, 30, 18, 25, 33, 19, 28, 35, 20, 27, 31, 16, 24, 29, 32, 21, 26, 34, 17}; 
+    int num_datos = 20; 
+    int num_clases = (int)(1 + 3.322 * log10(num_datos));
+
+    calcular_frecuencias(datos, num_datos, num_clases);
+
+    return 0;
+}
